@@ -9,8 +9,6 @@ spec:
   uuid: ${UUID}
   elasticsearch:
     url: ${ES_SERVER}
-  clustername: ${cloud_name}
-  test_user: ${cloud_name}-${WORKLOAD}-ci-${pairs}p
   metadata:
     collection: ${METADATA_COLLECTION}
     serviceaccount: backpack-view
@@ -23,13 +21,17 @@ spec:
       run_id: "$RUN_ID"
       hostnetwork: ${HOSTNETWORK}
       serviceip: ${SERVICEIP}
+      servicetype: ${SERVICETYPE}
+      metallb:
+        addresspool: "${ADDRESSPOOL}"
+        service_etp: "${SERVICE_ETP}" 
       networkpolicy: ${NETWORK_POLICY}
       pin: true
       pin_server: "$server"
       pin_client: "$client"
       multus:
         enabled: false
-      samples: 3
+      samples: ${SAMPLES}
       pair: ${pairs}
       nthrs:
         - 1

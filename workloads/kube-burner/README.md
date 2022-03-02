@@ -35,10 +35,12 @@ All scripts can be tweaked with the following environment variables:
 | **VERIFY_OBJECTS**   | Verify objects created by kube-burner | true |
 | **ERROR_ON_VERIFY**  | Make kube-burner pod to hang when verification fails | true |
 | **STEP_SIZE**        | Prometheus step size, useful for long benchmarks | 30s|
+| **PRELOAD_IMAGES**   | Preload kube-buner's benchmark images in the cluster | true |
+| **PRELOAD_PERIOD**   | How long the preload stage will last | 2m |
 | **LOG_STREAMING**    | Enable log streaming of kube-burner pod | true |
 | **CLEANUP**          | Delete old namespaces for the selected workload before starting benchmark | false |
 | **CLEANUP_WHEN_FINISH** | Delete workload's namespaces after running it | false |
-| **KUBE_BURNER_IMAGE** | Kube-burner container image | quay.io/cloud-bulldozer/kube-burner:v0.13 |
+| **KUBE_BURNER_IMAGE** | Kube-burner container image | quay.io/cloud-bulldozer/kube-burner:v0.14.3 |
 | **LOG_LEVEL**        | Kube-burner log level | info |
 | **PPROF_COLLECTION** | Collect and store pprof data locally | false |
 | **PPROF_COLLECTION_INTERVAL** | Intervals for which pprof data will be collected | 5m | 
@@ -145,4 +147,5 @@ Password for the Snappy data-server.
 
 **`SNAPPY_USER_FOLDER`**
 Default: 'perf-ci'
-To store the data for a specific user
+To store the data for a specific user.
+

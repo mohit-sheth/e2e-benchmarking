@@ -2,6 +2,7 @@
 
 source ../../utils/compare.sh
 source ../../utils/common.sh
+openshift_login
 source env.sh
 
 get_scenario(){
@@ -177,7 +178,7 @@ test_routes(){
       local scheme="http://"
     fi
     for host in $(oc get route -n http-scale-${termination} --no-headers -o custom-columns="route:.spec.host"); do
-      curl --retry 3 --connect-timeout 5 -sSk ${scheme}${host}/${URL_PATH} -o /dev/null
+      curl --retry 3 --connect-timeout 5 -sSk ${scheme}${host}${URL_PATH} -o /dev/null
     done
   done
 }

@@ -55,12 +55,12 @@ global:
         url: https://localhost:2379/debug/pprof/profile?timeout=30
 {{ end }}
 jobs:
-  - name: max-serv
+  - name: max-services
     jobIterations: ${TEST_JOB_ITERATIONS}
     qps: ${QPS}
     burst: ${BURST}
     namespacedIterations: false
-    namespace: max-serv-${UUID}
+    namespace: ${UUID}
     podWait: ${POD_WAIT}
     cleanup: ${CLEANUP}
     waitFor: ${WAIT_FOR}
@@ -68,6 +68,8 @@ jobs:
     verifyObjects: ${VERIFY_OBJECTS}
     errorOnVerify: ${ERROR_ON_VERIFY}
     maxWaitTimeout: ${MAX_WAIT_TIMEOUT}
+    preLoadImages: ${PRELOAD_IMAGES}
+    preLoadPeriod: ${PRELOAD_PERIOD}
     objects:
       - objectTemplate: deployment.yml
         replicas: 1

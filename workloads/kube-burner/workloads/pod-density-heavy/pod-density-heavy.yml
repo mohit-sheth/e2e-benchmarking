@@ -60,7 +60,7 @@ jobs:
     qps: ${QPS}
     burst: ${BURST}
     namespacedIterations: false
-    namespace: pod-density-heavy-${UUID}
+    namespace: ${UUID}
     podWait: ${POD_WAIT}
     cleanup: ${CLEANUP}
     waitFor: ${WAIT_FOR}
@@ -68,6 +68,8 @@ jobs:
     verifyObjects: ${VERIFY_OBJECTS}
     errorOnVerify: ${ERROR_ON_VERIFY}
     maxWaitTimeout: ${MAX_WAIT_TIMEOUT}
+    preLoadImages: ${PRELOAD_IMAGES}
+    preLoadPeriod: ${PRELOAD_PERIOD}
     objects:
 
       - objectTemplate: pod.yml

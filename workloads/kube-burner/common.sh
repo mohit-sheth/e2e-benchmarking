@@ -4,6 +4,8 @@ source ../../utils/common.sh
 source ../../utils/benchmark-operator.sh
 source env.sh
 
+openshift_login
+
 # If INDEXING is disabled we disable metadata collection
 if [[ ${INDEXING} == "false" ]]; then
   export METADATA_COLLECTION=false
@@ -14,6 +16,21 @@ fi
 export TOLERATIONS="[{key: role, value: workload, effect: NoSchedule}]"
 export UUID=${UUID:-$(uuidgen)}
 
+export baremetalCheck=$(oc get infrastructure cluster -o json | jq .spec.platformSpec.type)
+
+#Check to see if the infrastructure type is baremetal to adjust script as necessary 
+if [[ "${baremetalCheck}" == '"BareMetal"' ]]; then
+  log "BareMetal infastructure: setting isBareMetal accordingly"
+  export isBareMetal=true
+else
+  export isBareMetal=false
+fi
+
+if [[ "${isBareMetal}" == "true" ]]; then
+  # installing python3.8
+  sudo yum -y install python3.8
+  #sudo alternatives --set python3 /usr/bin/python3.8
+fi
 
 collect_pprof() {
   sleep 50
@@ -23,6 +40,9 @@ collect_pprof() {
     sleep 60
   done
 }
+
+
+  
 
 
 deploy_operator() {
@@ -124,14 +144,27 @@ check_running_benchmarks() {
 }
 
 cleanup() {
+  WORKLOAD=$1
   oc delete ns -l kube-burner-uuid=${UUID} --grace-period=600
 
-  # Force delete the remaining namespaces
-  WORKLOAD=$1
-  for ns in $(oc get ns | grep $WORKLOAD | awk '{print $1}'); do 
-    oc delete --all pods -n $ns --force --grace-period=0 --ignore-not-found --wait;
-    oc delete namespace $ns --ignore-not-found
-  done
+  kube_ns=$(oc get ns -l kube-burner-uuid=${UUID} -o custom-columns=name:{.metadata.name} --no-headers)
+
+  if [[ $kube_ns ]]; then
+    # Ignore cluster density workloads
+    if [[ ! "$WORKLOAD" =~ cluster ]]; then
+      # Force delete individual pods
+      for cleanup in $(oc get pods -n ${kube_ns} --no-headers -o custom-columns=name:{.metadata.name}); do
+        oc delete -n ${kube_ns} pod/${cleanup} --force
+      done
+    fi
+
+    # Force delete the remaining namespaces
+    for ns in ${kube_ns}; do
+      oc delete --all pods -n ${ns} --force --grace-period=0 --ignore-not-found --wait
+      oc delete namespace ${ns} --ignore-not-found
+    done
+  fi
+
 }
 
 get_pprof_secrets() {
@@ -156,7 +189,7 @@ snappy_backup() {
  tar -zcf pprof.tar.gz ./pprof-data
  workload=${1}
  snappy_path="$SNAPPY_USER_FOLDER/$runid$platform-$cluster_version-$network_type/$workload/$folder_date_time/"
- generate_metadata > metadata.json  
+ generate_metadata > metadata.json
  ../../utils/snappy-move-results/run_snappy.sh pprof.tar.gz $snappy_path
  ../../utils/snappy-move-results/run_snappy.sh metadata.json $snappy_path
  store_on_elastic

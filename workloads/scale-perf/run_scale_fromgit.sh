@@ -3,7 +3,10 @@
 source ./common.sh
 source ../../utils/common.sh
 
+openshift_login
+
 log "Starting test for cloud: ${CLOUD_NAME}"
+start_time=`date`
 deploy_operator
 
 # Get initial worker count
@@ -38,3 +41,6 @@ for x in $(seq 1 ${RUNS}); do
     fi
   done
 done
+end_time=`date`
+duration=`date -ud@$(($(date -ud"$end_time" +%s)-$(date -ud"$start_time" +%s))) +%T`
+log "Duration of execution: ${duration} for number of scale runs: ${RUNS}"

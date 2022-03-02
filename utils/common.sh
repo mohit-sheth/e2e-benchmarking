@@ -1,5 +1,27 @@
 #!/usr/bin/env bash
 
+##############################################################################
+# Prints log messages
+# Arguments:
+#   Log string
+##############################################################################
+log() {
+  echo -e "\033[1m$(date -u) ${@}\033[0m"
+}
+
+function openshift_login () {
+  if [[ -z $KUBECONFIG ]] && [[ ! -s $HOME/.kube/config ]]; then
+    log "KUBECONFIG var is not defined and cannot find kube config in the home directory, trying to use oc login"
+    if [[ -n ${KUBEUSER}} ]] && [[ -n ${KUBEPASSWORD} ]] && [[ -n ${KUBEURL} ]]; then
+  	  oc login -u ${KUBEUSER} -p ${KUBEPASSWORD} ${KUBEURL}
+    else
+  	  log "No openshift authentication method found, exiting"
+         exit 1
+    fi
+  fi
+}
+
+
 # Two arguments are 'pod label' and 'timeout in seconds'
 function get_pod () {
   counter=0
@@ -55,14 +77,7 @@ function check_pod_ready_state () {
 }
 
 
-##############################################################################
-# Prints log messages
-# Arguments:
-#   Log string
-##############################################################################
-log() {
-  echo -e "\033[1m$(date -u) ${@}\033[0m"
-}
+
 
 ##############################################################################
 # Imports a CSV file into a google spreadsheet
@@ -72,14 +87,22 @@ log() {
 #   Gmail email address
 #   Service account file
 ##############################################################################
-gen_spreadsheet() {
-  log "Installing requirements to generate spreadsheet"
-  csv_tmp=$(mktemp -d)
-  python -m venv ${csv_tmp}
-  source ${csv_tmp}/bin/activate
+
+gen_spreadsheet_helper() {
   pip install oauth2client>=4.1.3 gspread
-  $(dirname ${BASH_SOURCE[@]})/csv_gen.py --sheetname ${1}-$(date "+%Y-%m-%dT%H:%M:%S") -c ${2} --email ${3} --service-account ${4}
-  deactivate
-  rm -rf ${csv_tmp}
+  python3 $(dirname $(realpath ${BASH_SOURCE[0]}))/csv_gen.py --sheetname ${1}-$(date "+%Y-%m-%dT%H:%M:%S") -c ${2} --email ${3} --service-account ${4}
 }
 
+gen_spreadsheet() {
+  log "Installing requirements to generate spreadsheet"
+  if [[ "${VIRTUAL_ENV}" != "" ]]; then
+    gen_spreadsheet_helper ${1} ${2} ${3} ${4}
+  else
+    csv_tmp=$(mktemp -d)
+    python -m venv ${csv_tmp}
+    source ${csv_tmp}/bin/activate
+    gen_spreadsheet_helper ${1} ${2} ${3} ${4}
+    deactivate
+    rm -rf ${csv_tmp}
+  fi
+}
