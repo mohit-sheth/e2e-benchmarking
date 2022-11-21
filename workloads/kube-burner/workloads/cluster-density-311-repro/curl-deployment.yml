@@ -15,11 +15,11 @@ spec:
         command: ["sleep", "inf"]
         env:
         - name: WEBSERVER_HOSTNAME
-          value: webserver-{{randInteger 1 10}}
+          value: webserver-{{randInteger 1 15}}
         - name: WEBSERVER_PORT
           value: "8080"
         - name: WEBSERVER_ROUTE
-          value: webserver-{{randInteger 1 10}}-{{.namespace}}-{{randInteger 1 .iterations}}.{{.ingressDomain}}
+          value: webserver-{{randInteger 1 15}}-{{.namespace}}-{{randInteger 1 .iterations}}.{{.ingressDomain}}
         imagePullPolicy: IfNotPresent
         securityContext:
           privileged: false
@@ -28,7 +28,7 @@ spec:
             command: 
               - "/bin/sh"
               - "-c"
-              - "curl ${WEBSERVER_HOSTNAME}:${WEBSERVER_PORT}; curl ${WEBSERVER_ROUTE}"
+              - "curl ${WEBSERVER_HOSTNAME}:${WEBSERVER_PORT} --fail && curl ${WEBSERVER_ROUTE} --fail"
           periodSeconds: 1
           timeoutSeconds: 1
           failureThreshold: 600

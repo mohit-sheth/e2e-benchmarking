@@ -53,6 +53,7 @@ collect_pprof() {
 }
 
 run_workload() {
+  set -x
   local CMD
   local KUBE_BURNER_DIR 
   KUBE_BURNER_DIR=$(mktemp -d)
@@ -92,6 +93,7 @@ run_workload() {
     RESULT=Failed
   fi
   gen_metadata ${WORKLOAD} ${start_date} $(date +%s%3N)
+  set +x
 }
 
 find_running_pods_num() {

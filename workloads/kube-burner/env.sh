@@ -1,35 +1,36 @@
 #!/usr/bin/env bash
 
+export JOB_ITERATIONS=200
 # Benchmark-operator
 export POD_READY_TIMEOUT=${POD_READY_TIMEOUT:-180}
 
 # Indexing variables
 export INDEXING=${INDEXING:-true}
-export ES_SERVER=${ES_SERVER:-https://search-perfscale-dev-chmf5l4sh66lvxbnadi4bznl3a.us-west-2.es.amazonaws.com:443}
+export ES_SERVER=
 export ES_INDEX=${ES_INDEX:-ripsaw-kube-burner}
 export STEP_SIZE=${STEP_SIZE:-30s}
 export METADATA_COLLECTION=${METADATA_COLLECTION:-true}
-export PROM_URL=${PROM_URL:-https://$(oc get route -n openshift-monitoring prometheus-k8s -o jsonpath="{.spec.host}")}
+export PROM_URL=https://$(oc get route -n openshift-monitoring prometheus-k8s -o jsonpath="{.spec.host}")
 
 # Kube-burner vars
-export QPS=${QPS:-20}
-export BURST=${BURST:-20}
-export MAX_WAIT_TIMEOUT=${MAX_WAIT_TIMEOUT:-1h}
+export QPS=5
+export BURST=5
+export MAX_WAIT_TIMEOUT=90m
 export CLEANUP=${CLEANUP:-true}
 export POD_NODE_SELECTOR=${POD_NODE_SELECTOR:-'{node-role.kubernetes.io/worker: }'}
 export WORKER_NODE_LABEL=${WORKER_NODE_LABEL:-"node-role.kubernetes.io/worker"}
 export WAIT_WHEN_FINISHED=true
-export POD_WAIT=${POD_WAIT:-false}
+export POD_WAIT=false
 export WAIT_FOR=${WAIT_FOR:-[]}
 export VERIFY_OBJECTS=${VERIFY_OBJECTS:-true}
 export ERROR_ON_VERIFY=${ERROR_ON_VERIFY:-true}
-export PRELOAD_IMAGES=${PRELOAD_IMAGES:-true}
+export PRELOAD_IMAGES=true
 export PRELOAD_PERIOD=${PRELOAD_PERIOD:-2m}
 
 # Kube-burner benchmark
 export KUBE_BURNER_URL=${KUBE_BURNER_URL:-"https://github.com/cloud-bulldozer/kube-burner/releases/download/v0.17.1/kube-burner-0.17.1-Linux-x86_64.tar.gz"}
 export JOB_TIMEOUT=${JOB_TIMEOUT:-4h}
-export NODE_SELECTOR=${NODE_SELECTOR:-'{node-role.kubernetes.io/worker: }'}
+export NODE_SELECTOR=${NODE_SELECTOR:-'{node-role.kubernetes.io/workload: }'}
 export METRICS_PROFILE=${METRICS_PROFILE}
 export JOB_PAUSE=${JOB_PAUSE:-1m}
 
@@ -43,9 +44,9 @@ export CHURN_DELAY=${CHURN_DELAY:-60s}
 export CHURN_PERCENT=${CHURN_PERCENT:-10}
 
 # Misc
-export CLEANUP_WHEN_FINISH=${CLEANUP_WHEN_FINISH:-false}
+export CLEANUP_WHEN_FINISH=false
 export CLEANUP_TIMEOUT=${CLEANUP_TIMEOUT:-30m}
-export LOG_LEVEL=${LOG_LEVEL:-info}
+export LOG_LEVEL=debug
 export KUBE_DIR=${KUBE_DIR:-/tmp}
 
 # Pprof

@@ -81,52 +81,55 @@ jobs:
     objects:
 
       - objectTemplate: imagestream.yml
-        replicas: 15
+        replicas: 57
         inputVars:
           prefix: cluster-density
 
       - objectTemplate: build.yml
-        replicas: 17
+        replicas: 57
         inputVars:
           prefix: cluster-density
           nodeSelector: "{{.POD_NODE_SELECTOR}}"
-
-      - objectTemplate: webserver-deployment.yml
-        replicas: 5
-        inputVars:
-          nodeSelector: "{{.POD_NODE_SELECTOR}}"
-          name: cluster-density
-
-      - objectTemplate: webserver-service.yml
-        replicas: 5
-        inputVars:
-          name: cluster-density
-      
-      - objectTemplate: webserver-route.yml
-        replicas: 5
-        inputVars:
-          ingressDomain: {{.INGRESS_DOMAIN}}
-          name: cluster-density
 
       - objectTemplate: secret.yml
         replicas: 20
 
       - objectTemplate: configmap.yml
-        replicas: 11
+        replicas: 10
+
+      - objectTemplate: webserver-deployment.yml
+        replicas: 75
+        inputVars:
+          nodeSelector: "{{.POD_NODE_SELECTOR}}"
+          name: cluster-density
+
+      - objectTemplate: webserver-service.yml
+        replicas: 15
+        inputVars:
+          name: cluster-density
+      
+      - objectTemplate: webserver-route.yml
+        replicas: 15
+        inputVars:
+          ingressDomain: {{.INGRESS_DOMAIN}}
+          name: cluster-density
 
       - objectTemplate: deny-all.yml
         replicas: 1
 
+      - objectTemplate: allow-ingress.yml
+        replicas: 1
+
       - objectTemplate: case1-networkpolicy.yml
-        replicas: 7
+        replicas: 4
         inputVars:
           job_iterations: {{.TEST_JOB_ITERATIONS}}
 
       - objectTemplate: curl-deployment.yml
-        replicas: 5
+        replicas: 75
         inputVars:
           ingressDomain: {{.INGRESS_DOMAIN}}
-          namespace: pods-service-route
+          namespace: cluster-density
           iterations: {{.TEST_JOB_ITERATIONS}}
           nodeSelector: "{{.POD_NODE_SELECTOR}}"
 
