@@ -41,12 +41,19 @@ add_flag() {
   local flag_value="$2"
   if [ -n "$flag_value" ]; then
     cmd+=" --$flag_name=$flag_value"
+  else
+    cmd+=" --$flag_name"
   fi
 }
 
 if [ -n "${EXTERNAL_SERVER_ADDRESS}" ]; then
   echo "EXTERNAL_SERVER_ADDRESS is set ${EXTERNAL_SERVER_ADDRESS}"
   add_flag "serverIP" "${EXTERNAL_SERVER_ADDRESS}"
+fi
+
+if [ "${LOCAL}" = "true" ]; then
+  echo "Running in LOCAL mode, adding --local"
+  add_flag "local"
 fi
 
 # Add flags based on conditions
