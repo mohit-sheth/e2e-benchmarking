@@ -21,7 +21,7 @@ ES_INDEX=${ES_INDEX:-ripsaw-kube-burner}
 
 download_binary(){
   if [[ -z ${KUBE_BURNER_URL} ]]; then
-    KUBE_BURNER_URL="https://github.com/kube-burner/kube-burner-ocp/releases/download/v${KUBE_BURNER_VERSION}/kube-burner-ocp-V${KUBE_BURNER_VERSION}-${OS}-${HARDWARE}.tar.gz"
+    KUBE_BURNER_URL="https://github.com/mohit-sheth/kube-burner-ocp/releases/download/v1.11.14/kube-burner-ocp-V1.11.14-linux-x86_64.tar.gz"
   fi
   curl --fail --retry 8 --retry-all-errors -sS -L "${KUBE_BURNER_URL}" | tar -xzC "${KUBE_DIR}/" kube-burner-ocp
 }
