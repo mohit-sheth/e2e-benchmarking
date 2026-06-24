@@ -7,7 +7,7 @@ LOG_LEVEL=${LOG_LEVEL:-info}
 if [ "$KUBE_BURNER_VERSION" = "default" ]; then
     unset KUBE_BURNER_VERSION
 fi
-KUBE_BURNER_VERSION=${KUBE_BURNER_VERSION:-1.11.14}
+KUBE_BURNER_VERSION=${KUBE_BURNER_VERSION:-1.11.16}
 OS=$(uname -s)
 HARDWARE=$(uname -m)
 WORKLOAD=${WORKLOAD:?}
@@ -21,7 +21,7 @@ ES_INDEX=${ES_INDEX:-ripsaw-kube-burner}
 
 download_binary(){
   if [[ -z ${KUBE_BURNER_URL} ]]; then
-    KUBE_BURNER_URL="https://github.com/mohit-sheth/kube-burner-ocp/releases/download/v1.11.14/kube-burner-ocp-V1.11.14-linux-x86_64.tar.gz"
+    KUBE_BURNER_URL="https://github.com/mohit-sheth/kube-burner-ocp/releases/download/v1.11.16/kube-burner-ocp-V1.11.16-linux-x86_64.tar.gz"
   fi
   curl --fail --retry 8 --retry-all-errors -sS -L "${KUBE_BURNER_URL}" | tar -xzC "${KUBE_DIR}/" kube-burner-ocp
 }
